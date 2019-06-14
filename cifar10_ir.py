@@ -14,7 +14,8 @@ def make_dumps():
 def load_dump(dump_name):
     return pickle.load(open(dump_name, "rb"))
 
-
+# testing from ubuntu
+    
 x_train = load_dump('x_train.p')
 y_train = load_dump('y_train.p')
 x_test = load_dump('x_test.p')
