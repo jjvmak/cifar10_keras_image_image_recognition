@@ -1,10 +1,11 @@
 
-from keras.datasets import cifar10
+import tensorflow
 import pickle
 
 
 def make_dumps():
-    (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+    (x_train, y_train), (x_test, y_test) = \
+    tensorflow.keras.datasets.cifar10.load_data()
     pickle.dump(x_test, open("x_test.p", "wb"))
     pickle.dump(x_train, open("x_train.p", "wb"))
     pickle.dump(y_test, open("y_test.p", "wb"))
@@ -14,8 +15,7 @@ def make_dumps():
 def load_dump(dump_name):
     return pickle.load(open(dump_name, "rb"))
 
-# testing from ubuntu
-    
+
 x_train = load_dump('x_train.p')
 y_train = load_dump('y_train.p')
 x_test = load_dump('x_test.p')
