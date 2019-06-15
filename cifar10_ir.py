@@ -1,6 +1,12 @@
 
 import tensorflow
 import pickle
+import numpy as np
+from scipy import stats
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.layers import Activation, Dropout, Flatten, Dense
+from tensorflow.keras.utils import to_categorical
 
 
 def make_dumps():
@@ -16,7 +22,65 @@ def load_dump(dump_name):
     return pickle.load(open(dump_name, "rb"))
 
 
+def first_order_texture_measures(img):
+    r = img[:, :, 0]
+    g = img[:, :, 1]
+    b = img[:, :, 2]
+
+    r_mean = np.mean(r, axis=1)
+    g_mean = np.mean(g, axis=1)
+    b_mean = np.mean(b, axis=1)
+
+    r_var = np.var(r, axis=1)
+    g_var = np.var(g, axis=1)
+    b_var = np.var(b, axis=1)
+
+    fetures = np.concatenate(
+        (r_mean, g_mean, b_mean, r_var, g_var, b_var), axis=0)
+
+    return fetures.reshape(-1, len(fetures))
+
+
+def extract_rgb_features(image_array):
+    features = first_order_texture_measures(image_array[0])
+    for i in range(len(image_array)):
+        if (i != 0):
+            print('viela ' + repr(i))
+            features = np.concatenate((features, first_order_texture_measures(image_array[i])), axis=0)
+    return features
+
+
 x_train = load_dump('x_train.p')
 y_train = load_dump('y_train.p')
 x_test = load_dump('x_test.p')
 y_test = load_dump('y_test.p')
+x_train_rgb = load_dump('x_train_rgb.p')
+x_test_rgb = load_dump('x_test_rgb.p')
+y_train_cat = to_categorical(y_train)
+
+model = Sequential()
+model.add(Conv2D(16, (3, 3), input_shape=(32, 32, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model.add(Conv2D(8, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model.add(Conv2D(4, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+
+model.add(Flatten())
+model.add(Dense(32))
+model.add(Activation('relu'))
+model.add(Dropout(0.1))
+model.add(Dense(10))
+model.add(Activation('sigmoid'))
+
+model.compile(loss='categorical_crossentropy',
+              optimizer='adam',
+              metrics=['accuracy'])
+
+model.fit(x=x_train, y=y_train_cat, epochs=1)
+pred = model.predict(x=x_test)
