@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-image-input',
@@ -11,7 +12,10 @@ export class ImageInputComponent implements OnInit {
   public message: string;
   showResultArea: boolean;
 
+  constructor(private http: HttpClient) { }
+
   preview(files) {
+    this.showResultArea = false;
     if (files.length === 0) {
       return;
     }
@@ -31,7 +35,18 @@ export class ImageInputComponent implements OnInit {
     reader.onload = () => {
       this.imgURL = reader.result;
       this.showResultArea = true;
+      const body = {
+        image: this.imgURL
+      };
+      this.http.post('http://127.0.0.1:5000/image', body, {observe : 'response'})
+        .subscribe(resp => {
+          // TODO: handle message
+          console.log(resp.body);
+      });
     };
+
+
+
   }
 
   ngOnInit(): void {
