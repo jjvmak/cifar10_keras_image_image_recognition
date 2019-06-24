@@ -34,9 +34,11 @@ export class ImageInputComponent implements OnInit {
     reader.readAsDataURL(files[0]);
     reader.onload = () => {
       this.imgURL = reader.result;
+      let imageEnc = this.imgURL.toString();
+      imageEnc = imageEnc.replace('data:image/png;base64,', '');
       this.showResultArea = true;
       const body = {
-        image: this.imgURL
+        image: imageEnc
       };
       this.http.post('http://127.0.0.1:5000/image', body, {observe : 'response'})
         .subscribe(resp => {

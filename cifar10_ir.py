@@ -54,8 +54,8 @@ x_train = load_dump('x_train.p')
 y_train = load_dump('y_train.p')
 x_test = load_dump('x_test.p')
 y_test = load_dump('y_test.p')
-x_train_rgb = load_dump('x_train_rgb.p')
-x_test_rgb = load_dump('x_test_rgb.p')
+#x_train_rgb = load_dump('x_train_rgb.p')
+#x_test_rgb = load_dump('x_test_rgb.p')
 y_train_cat = to_categorical(y_train)
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')
@@ -90,5 +90,5 @@ model.compile(loss='categorical_crossentropy',
               optimizer=opt,
               metrics=['accuracy'])
 
-model.fit(x=x_train, y=y_train_cat, epochs=2)
+model.fit(x=x_train, y=y_train_cat, epochs=5)
 pred = model.predict(x=x_test)
