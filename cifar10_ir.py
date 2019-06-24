@@ -90,5 +90,10 @@ model.compile(loss='categorical_crossentropy',
               optimizer=opt,
               metrics=['accuracy'])
 
-model.fit(x=x_train, y=y_train_cat, epochs=5)
+model.fit(x=x_train, y=y_train_cat, epochs=3)
+
+filename = 'model_' + '1' + '.h5'
+model.save(filename)
+print('>Saved %s' % filename)
+
 pred = model.predict(x=x_test)
