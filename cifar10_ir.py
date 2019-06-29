@@ -3,7 +3,7 @@ import tensorflow
 import pickle
 import numpy as np
 from scipy import stats
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, model_from_json
 from tensorflow.keras.layers import Conv2D, MaxPooling2D
 from tensorflow.keras.layers import Activation, Dropout, Flatten, Dense
 from tensorflow.keras.utils import to_categorical
@@ -54,8 +54,6 @@ x_train = load_dump('x_train.p')
 y_train = load_dump('y_train.p')
 x_test = load_dump('x_test.p')
 y_test = load_dump('y_test.p')
-#x_train_rgb = load_dump('x_train_rgb.p')
-#x_test_rgb = load_dump('x_test_rgb.p')
 y_train_cat = to_categorical(y_train)
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')
@@ -96,4 +94,7 @@ filename = 'model_' + '1' + '.h5'
 model.save(filename)
 print('>Saved %s' % filename)
 
-pred = model.predict(x=x_test)
+# saving as json
+json_string = model.to_json()
+open('./model_architecture.json', 'w').write(json_string)
+model.save_weights('model_weights.h5')

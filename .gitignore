@@ -9,3 +9,5 @@ api/api.pyc
 api/__pycache__/api.cpython-37.pyc
 model_1.h5
 api/outfile.jpg
+model_architecture.json
+model_weights.h5
