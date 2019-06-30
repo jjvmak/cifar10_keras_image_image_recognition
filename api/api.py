@@ -29,12 +29,17 @@ class Model(object):
         with graph.as_default():
             self.model.load_weights('model_weights.h5')
             pred = self.model.predict(img)
-            print(pred)
-            return pred
+            maxElement = np.amax(pred)
+            print(maxElement)
+            result = np.argmax(pred)
+            print('Returned:', result)
+            print(labels[result])
+            return labels[result]
 
 
 app = Flask(__name__)
 CORS(app)
+labels = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 model = Model()
 
 
@@ -46,6 +51,5 @@ def image():
     img = np.array(Image.open(img_bytes))
     resized = resize(img, (32, 32), anti_aliasing='reflect', mode='reflect')
     resized_reshaped = resized.reshape(1, 32, 32, 3)
-    print(resized_reshaped.shape)
-    print(model.__call__(resized_reshaped))
-    return jsonify({'msg': '200 ok'})
+    label = model.__call__(resized_reshaped)
+    return jsonify({'msg': label})

@@ -11,6 +11,7 @@ export class ImageInputComponent implements OnInit {
   imgURL: any;
   public message: string;
   showResultArea: boolean;
+  resultLabel: string;
 
   constructor(private http: HttpClient) { }
 
@@ -42,8 +43,9 @@ export class ImageInputComponent implements OnInit {
       };
       this.http.post('http://127.0.0.1:5000/image', body, {observe : 'response'})
         .subscribe(resp => {
-          // TODO: handle message
-          console.log(resp.body);
+          const obj: Result = JSON.parse(JSON.stringify(resp.body));
+          console.log(obj.msg);
+          this.resultLabel = obj.msg;
       });
     };
 
@@ -53,4 +55,8 @@ export class ImageInputComponent implements OnInit {
 
   ngOnInit(): void {
   }
+}
+
+interface Result {
+  msg: string;
 }

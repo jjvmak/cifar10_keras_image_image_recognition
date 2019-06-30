@@ -88,7 +88,7 @@ model.compile(loss='categorical_crossentropy',
               optimizer=opt,
               metrics=['accuracy'])
 
-model.fit(x=x_train, y=y_train_cat, epochs=3)
+model.fit(x=x_train, y=y_train_cat, epochs=20)
 
 filename = 'model_' + '1' + '.h5'
 model.save(filename)
