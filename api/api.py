@@ -29,12 +29,9 @@ class Model(object):
         with graph.as_default():
             self.model.load_weights('model_weights.h5')
             pred = self.model.predict(img)
-            maxElement = np.amax(pred)
-            print(maxElement)
+            likelihood = repr(np.amax(pred))
             result = np.argmax(pred)
-            print('Returned:', result)
-            print(labels[result])
-            return labels[result]
+            return labels[result], likelihood
 
 
 app = Flask(__name__)
@@ -51,5 +48,5 @@ def image():
     img = np.array(Image.open(img_bytes))
     resized = resize(img, (32, 32), anti_aliasing='reflect', mode='reflect')
     resized_reshaped = resized.reshape(1, 32, 32, 3)
-    label = model.__call__(resized_reshaped)
-    return jsonify({'msg': label})
+    label, likelihood = model.__call__(resized_reshaped)
+    return jsonify({'msg': label, 'likelihood': likelihood})
