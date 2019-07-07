@@ -5,12 +5,9 @@ from io import BytesIO
 import numpy as np
 from flask_cors import CORS
 from PIL import Image
-from tensorflow.keras.models import Sequential, model_from_json
+from tensorflow.keras.models import model_from_json
 from skimage.transform import resize
 import tensorflow
-from tensorflow.keras.layers import Conv2D, MaxPooling2D
-from tensorflow.keras.layers import Activation, Dropout, Flatten, Dense
-from tensorflow.keras.models import load_model
 
 
 graph = None
