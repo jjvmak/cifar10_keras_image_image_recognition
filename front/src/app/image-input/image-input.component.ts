@@ -16,6 +16,8 @@ export class ImageInputComponent implements OnInit {
   constructor(private http: HttpClient) { }
 
   preview(files) {
+    // TODO: image handler services
+    this.resultLabel = '';
     this.showResultArea = false;
     if (files.length === 0) {
       return;
@@ -36,7 +38,11 @@ export class ImageInputComponent implements OnInit {
     reader.onload = () => {
       this.imgURL = reader.result;
       let imageEnc = this.imgURL.toString();
-      imageEnc = imageEnc.replace('data:image/png;base64,', '');
+      if (imageEnc.includes('data:image/png;base64,')) {
+        imageEnc = imageEnc.replace('data:image/png;base64,', '');
+      } else if (imageEnc.includes('data:image/jpeg;base64,'))  {
+        imageEnc = imageEnc.replace('data:image/jpeg;base64,', '');
+      }
       this.showResultArea = true;
       const body = {
         image: imageEnc
@@ -44,13 +50,9 @@ export class ImageInputComponent implements OnInit {
       this.http.post('http://127.0.0.1:5000/image', body, {observe : 'response'})
         .subscribe(resp => {
           const obj: Result = JSON.parse(JSON.stringify(resp.body));
-          console.log(obj.msg);
-          this.resultLabel = obj.msg;
+          this.resultLabel = obj.msg + ' (' + obj.likelihood + '%)';
       });
     };
-
-
-
   }
 
   ngOnInit(): void {
@@ -59,4 +61,5 @@ export class ImageInputComponent implements OnInit {
 
 interface Result {
   msg: string;
+  likelihood: string;
 }
